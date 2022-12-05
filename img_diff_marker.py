@@ -8,15 +8,15 @@ empty = cv2.cvtColor(empty, cv2.COLOR_BGR2GRAY)
 occupied = cv2.imread("images/utanjati_day_occupied.jpeg")
 occupied = cv2.cvtColor(occupied, cv2.COLOR_BGR2GRAY)
 
-(score, diff) = compare_ssim(empty, occupied, full=True, window_size=31, k1=0.00001, k2=0.00001)
+(score, diff) = compare_ssim(empty, occupied, full=True, window_size=11, k1=0.01, k2=0.01)
 diff = (diff * 255).astype("uint8")
 print("SSIM: {}".format(score))
 
+#thresholding algorithm
+thresh = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+#thresh = cv2.adaptiveThreshold(diff,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
+
 #find the contours
-#thresh = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
-#thresh = cv2.adaptiveThreshold(diff, 0, 255, cv2.ADAPTIVE_THRESH_MEAN_C)
-thresh = cv2.adaptiveThreshold(diff,100,cv2.ADAPTIVE_THRESH_MEAN_C,\
-            cv2.THRESH_BINARY,11,2)
 cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 cnts = imutils.grab_contours(cnts)
 
